@@ -19,7 +19,7 @@ public class Rose extends GeneralFlower {
 		
 	}
 	
-	public boolean isSpike() {
+	public boolean hasSpike() {
 		return spike;
 	}
 

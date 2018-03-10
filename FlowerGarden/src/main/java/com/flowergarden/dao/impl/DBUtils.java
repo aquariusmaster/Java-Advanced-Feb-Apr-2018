@@ -4,23 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DBUtils {
 
-    private static File fileToDB;
     private static final String PATH_TO_DB = "flowergarden.db";
 
     public static Connection getConnection() {
 
         File fileToDB = new File(PATH_TO_DB);
         Connection conn = null;
-        try(Connection connection = DriverManager.getConnection(
-                            "jdbc:sqlite:"+fileToDB.getCanonicalFile().toURI())) {
+        try {
+            conn = DriverManager.getConnection(
+                    "jdbc:sqlite:"+fileToDB.getCanonicalFile().toURI());
 
-            conn = connection;
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }

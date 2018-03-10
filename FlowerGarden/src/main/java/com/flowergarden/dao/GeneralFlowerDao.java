@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface GeneralFlowerDao {
 
-    GeneralFlower saveOrUpdate(GeneralFlower flower);
+    void saveOrUpdate(GeneralFlower flower);
     GeneralFlower findOne(Integer flowerId);
     List<GeneralFlower> findAll();
     void delete(Integer flowerId);
