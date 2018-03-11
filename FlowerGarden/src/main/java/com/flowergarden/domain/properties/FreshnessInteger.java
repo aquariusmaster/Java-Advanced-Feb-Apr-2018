@@ -9,17 +9,17 @@ public class FreshnessInteger implements Freshness<Integer>, Comparable<Freshnes
 	@XmlElement
 	private Integer freshness;
 	
-	@Override
-	public Integer getFreshness() {
-		return freshness;
-	}
-	
 	public FreshnessInteger(Integer freshness){
 		this.freshness = freshness;
 	}
-	
+
 	public FreshnessInteger(){
-		
+
+	}
+
+	@Override
+	public Integer getFreshness() {
+		return freshness;
 	}
 
 	@Override
