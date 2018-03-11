@@ -1,21 +1,25 @@
 package com.flowergarden.dao.impl;
 
-import com.flowergarden.dao.FlowerDao;
+import com.flowergarden.dao.GeneralFlowerDao;
 import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.domain.flowers.Rose;
 import com.flowergarden.domain.flowers.Tulip;
 import com.flowergarden.domain.properties.FreshnessInteger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.MissingFormatArgumentException;
 
-public class FlowerDaoJdbcImpl implements FlowerDao {
+
+public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
+
+    private final JdbcHandler jdbcHandler;
+
+    public GeneralFlowerJdbcDao(JdbcHandler jdbcHandler) {
+        this.jdbcHandler = jdbcHandler;
+    }
 
     @Override
     public void saveOrUpdate(GeneralFlower flower) {
@@ -30,6 +34,9 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
             case "Tulip":
                 saveOrUpdateTulip((Tulip) flower);
                 break;
+            default:
+                throw new RuntimeException("Cannot save flower: " + flower.getClass().getSimpleName() + " type does " +
+                        "not support");
         }
     }
 
@@ -37,8 +44,9 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
     public GeneralFlower findOne(Integer flowerId) {
 
         final String sql = "SELECT * FROM flower WHERE id=?";
-        ResultSet rs = executeSelect(sql, flowerId);
+        ResultSet rs = jdbcHandler.executeSelect(sql, flowerId);
         List<GeneralFlower> resultList = this.extractFlowerListFromResultSet(rs);
+        if (resultList == null) return null;
         if (resultList.size() > 1) {
             throw new RuntimeException("Not unique query result");
         }
@@ -49,7 +57,7 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
     public List<GeneralFlower> findAll() {
 
         final String sql = "SELECT * FROM flower";
-        ResultSet rs = executeSelect(sql, null);
+        ResultSet rs = jdbcHandler.executeSelect(sql);
         return extractFlowerListFromResultSet(rs);
 
     }
@@ -72,7 +80,7 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
                 "INSERT INTO flower (price, length, freshness, spike, name, bouquet_id) " +
                         "VALUES (?,?,?,?,?,?)";
 
-        return executeUpdate(sql,
+        return jdbcHandler.executeUpdate(sql,
                 flower.getPrice(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
@@ -85,7 +93,7 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
         final String sql =
                 "UPDATE flower SET price=?, length=?, freshness=?, spike=?, bouquet_id=? WHERE id=?";
 
-        return executeUpdate(sql,
+        return jdbcHandler.executeUpdate(sql,
                 flower.getPrice(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
@@ -108,7 +116,7 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
                 "INSERT INTO flower (price, length, freshness, name, bouquet_id) " +
                 "VALUES (?,?,?,?,?)";
 
-        return executeUpdate(sql,
+        return jdbcHandler.executeUpdate(sql,
                 flower.getPrice(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
@@ -121,7 +129,7 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
         final String sql =
                 "UPDATE flower SET price=?, length=?, freshness=?, bouquet_id=? WHERE id=?";
 
-        return executeUpdate(sql,
+        return jdbcHandler.executeUpdate(sql,
                 flower.getPrice(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
@@ -144,7 +152,7 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
                 "INSERT INTO flower (price, length, freshness, petals, name, bouquet_id) " +
                         "VALUES (?,?,?,?,?,?)";
 
-        return executeUpdate(sql,
+        return jdbcHandler.executeUpdate(sql,
                 flower.getPrice(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
@@ -157,7 +165,7 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
         final String sql =
                 "UPDATE flower SET price=?, length=?, freshness=?, petals=?, bouquet_id=? WHERE id=?";
 
-        return executeUpdate(sql,
+        return jdbcHandler.executeUpdate(sql,
                 flower.getPrice(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
@@ -174,15 +182,13 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
 
             while (rs.next()) {
 
-                GeneralFlower flower = null;
-
                 Integer id = rs.getInt("id");
                 Float price = rs.getFloat("price");
                 Integer length = rs.getInt("length");
-                String name = rs.getString("name");
                 FreshnessInteger freshness = new FreshnessInteger(rs.getInt("freshness"));
+                String type = rs.getString("name");
 
-                switch (name) {
+                switch (type) {
 
                     case "rose":
                         Rose rose = new Rose();
@@ -192,7 +198,8 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
                         rose.setFreshness(freshness);
                         Boolean spike = rs.getBoolean("spike");
                         rose.setSpike(spike);
-                        flower = rose;
+
+                        flowers.add(rose);
                         break;
                     case "chamomile":
                         Chamomile chamomile = new Chamomile();
@@ -202,7 +209,8 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
                         chamomile.setPrice(price);
                         chamomile.setLength(length);
                         chamomile.setFreshness(freshness);
-                        flower = chamomile;
+
+                        flowers.add(chamomile);
                         break;
                     case "tulip":
                         Tulip tulip = new Tulip();
@@ -210,124 +218,28 @@ public class FlowerDaoJdbcImpl implements FlowerDao {
                         tulip.setPrice(price);
                         tulip.setLength(length);
                         tulip.setFreshness(freshness);
-                        flower = tulip;
-                        break;
-                }
 
-                flowers.add(flower);
+                        flowers.add(tulip);
+                        break;
+                    default:
+                        throw new RuntimeException("Cannot get flower: " + type + " type does not support");
+                }
 
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e);
         } finally {
             try {
-                DBUtils.releaseConnection(rs.getStatement().getConnection());
-                rs.close();
+                jdbcHandler.closeResultSet(rs);
+                jdbcHandler.closeStatement(rs.getStatement());
+                jdbcHandler.releaseConnection(rs.getStatement().getConnection());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
 
         return flowers;
-    }
-
-    private int executeUpdate(String query, Object ...props) {
-
-        checkQuery(query, props);
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        int rowsChanged;
-
-        try {
-            conn = DBUtils.getConnection();
-            stmt = conn.prepareStatement(query);
-
-            for (int i = 0; i < props.length; i++) {
-                Object prop = props[i];
-
-                if (prop instanceof Integer) {
-                    stmt.setInt(i+1, (int) prop);
-                } else if (prop instanceof Float || prop instanceof Double ) {
-                    stmt.setFloat(i+1, (float) prop);
-                } else if (prop instanceof String) {
-                    stmt.setString(i+1, (String) prop);
-                } else {
-                    throw new MissingFormatArgumentException("Property type do not support");
-                }
-            }
-
-            rowsChanged = stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            DBUtils.closeStatement(stmt);
-            stmt = null;
-            DBUtils.releaseConnection(conn);
-            conn = null;
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        } finally {
-            DBUtils.closeStatement(stmt);
-            DBUtils.releaseConnection(conn);
-        }
-
-        return rowsChanged;
-    }
-
-    private ResultSet executeSelect(String sql, Object ...props) {
-
-        checkQuery(sql, props);
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet resultSet = null;
-
-        try {
-            conn = DBUtils.getConnection();
-            stmt = conn.prepareStatement(sql);
-
-            if (props != null) {
-                for (int i = 0; i < props.length; i++) {
-                    Object prop = props[i];
-
-                    if (prop instanceof Integer) {
-                        stmt.setInt(i+1, (int) prop);
-                    } else if (prop instanceof Float || prop instanceof Double ) {
-                        stmt.setFloat(i+1, (float) prop);
-                    } else if (prop instanceof String) {
-                        stmt.setString(i+1, (String) prop);
-                    } else {
-                        throw new MissingFormatArgumentException("Property type do not support");
-                    }
-                }
-            }
-
-            resultSet = stmt.executeQuery();
-
-        } catch (SQLException e) {
-            DBUtils.closeStatement(stmt);
-            stmt = null;
-            DBUtils.releaseConnection(conn);
-            conn = null;
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
-        } finally {
-//            DBUtils.closeStatement(stmt);
-//            DBUtils.releaseConnection(conn);
-        }
-
-        System.out.println(resultSet);
-        return resultSet;
-    }
-
-    private void checkQuery(String query, Object ...props) {
-        long count = query.chars().filter(ch -> ch == '?').count();
-        int propsLength = props != null ? props.length : 0;
-        if (count != propsLength) {
-            throw new RuntimeException("Mismatch statement count");
-        }
-
     }
 
 }

@@ -29,10 +29,6 @@ public abstract class GeneralBouquet implements Bouquet<GeneralFlower> {
         this.assemblePrice = assemblePrice;
     }
 
-    public List<GeneralFlower> getFlowerList() {
-        return flowerList;
-    }
-
     public void setFlowerList(List<GeneralFlower> flowerList) {
         this.flowerList = flowerList;
     }

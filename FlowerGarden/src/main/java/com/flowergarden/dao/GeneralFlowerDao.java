@@ -3,7 +3,7 @@ package com.flowergarden.dao;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import java.util.List;
 
-public interface FlowerDao {
+public interface GeneralFlowerDao {
 
     void saveOrUpdate(GeneralFlower flower);
     GeneralFlower findOne(Integer flowerId);

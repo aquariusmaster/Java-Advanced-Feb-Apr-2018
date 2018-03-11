@@ -1,7 +1,8 @@
 package com.flowergarden.run;
 
-import com.flowergarden.dao.FlowerDao;
-import com.flowergarden.dao.impl.FlowerDaoJdbcImpl;
+import com.flowergarden.dao.GeneralFlowerDao;
+import com.flowergarden.dao.impl.GeneralFlowerJdbcDao;
+import com.flowergarden.dao.impl.JdbcHandler;
 import com.flowergarden.domain.flowers.GeneralFlower;
 
 import java.io.File;
@@ -31,7 +32,8 @@ public class Run {
 			e.printStackTrace();
 		}
 
-		FlowerDao flowerDao = new FlowerDaoJdbcImpl();
+		JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
+		GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
 
 		List<GeneralFlower> flowers = flowerDao.findAll();
         System.out.println(flowers);
