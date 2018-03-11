@@ -3,7 +3,7 @@ package com.flowergarden.domain.flowers;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
 import com.flowergarden.domain.properties.FreshnessInteger;
 
-public abstract class GeneralFlower implements Flower<Integer>, Comparable<GeneralFlower> {
+public abstract class GeneralFlower implements Flower<FreshnessInteger>, Comparable<GeneralFlower> {
 
 	private Integer id;
 
@@ -22,31 +22,6 @@ public abstract class GeneralFlower implements Flower<Integer>, Comparable<Gener
 		this.price = price;
 		this.length = length;
 		this.freshness = freshness;
-	}
-
-	public void setFreshness(FreshnessInteger fr){
-		freshness = fr;
-	}
-	
-	@Override
-	public FreshnessInteger getFreshness() {
-		return freshness;
-	}
-
-	@Override
-	public float getPrice() {
-		return price;
-	}
-
-	@Override
-	public int getLength() {
-		return length;
-	}
-
-	@Override
-	public int compareTo(GeneralFlower compareFlower) {
-		int compareFresh = compareFlower.getFreshness().getFreshness();		
-		return this.getFreshness().getFreshness() - compareFresh;
 	}
 
 	public Integer getId() {
@@ -71,6 +46,31 @@ public abstract class GeneralFlower implements Flower<Integer>, Comparable<Gener
 
 	public void setBouquet(GeneralBouquet bouquet) {
 		this.bouquet = bouquet;
+	}
+
+	@Override
+	public FreshnessInteger getFreshness() {
+		return freshness;
+	}
+
+	public void setFreshness(FreshnessInteger fr){
+		freshness = fr;
+	}
+
+	@Override
+	public float getPrice() {
+		return price;
+	}
+
+	@Override
+	public int getLength() {
+		return length;
+	}
+
+	@Override
+	public int compareTo(GeneralFlower compareFlower) {
+		int compareFresh = compareFlower.getFreshness().getFreshness();
+		return this.getFreshness().getFreshness() - compareFresh;
 	}
 
 	@Override
