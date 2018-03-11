@@ -1,11 +1,9 @@
 package com.flowergarden.dao;
 
-import com.flowergarden.flowers.Flower;
-import com.flowergarden.flowers.GeneralFlower;
-
+import com.flowergarden.domain.flowers.GeneralFlower;
 import java.util.List;
 
-public interface GeneralFlowerDao {
+public interface FlowerDao {
 
     void saveOrUpdate(GeneralFlower flower);
     GeneralFlower findOne(Integer flowerId);

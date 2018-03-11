@@ -1,12 +1,8 @@
 package com.flowergarden.run;
 
-import com.flowergarden.dao.GeneralFlowerDao;
-import com.flowergarden.dao.impl.GeneralFlowerDaoJdbcImpl;
-import com.flowergarden.flowers.Chamomile;
-import com.flowergarden.flowers.GeneralFlower;
-import com.flowergarden.flowers.Rose;
-import com.flowergarden.flowers.Tulip;
-import com.flowergarden.properties.FreshnessInteger;
+import com.flowergarden.dao.FlowerDao;
+import com.flowergarden.dao.impl.FlowerDaoJdbcImpl;
+import com.flowergarden.domain.flowers.GeneralFlower;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 public class Run {
 
@@ -29,18 +26,15 @@ public class Run {
 			while (rs.next()) {
 				System.out.println(rs.getString(2));
 			}
+			st.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
-		GeneralFlowerDao flowerDao = new GeneralFlowerDaoJdbcImpl();
+		FlowerDao flowerDao = new FlowerDaoJdbcImpl();
 
-		Tulip tulip = new Tulip();
-		tulip.setId(7);
-		tulip.setPrice(14.5F);
-		tulip.setLenght(500);
-		tulip.setFreshness(new FreshnessInteger(5));
-		flowerDao.saveOrUpdate(tulip);
+		List<GeneralFlower> flowers = flowerDao.findAll();
+        System.out.println(flowers);
 
 	}
 
