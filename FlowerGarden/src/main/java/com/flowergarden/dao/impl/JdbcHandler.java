@@ -27,7 +27,7 @@ public class JdbcHandler {
                     "jdbc:sqlite:"+fileToDB.getCanonicalFile().toURI());
 
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Could not get JDBC Connection", e);
         }
         return conn;
     }

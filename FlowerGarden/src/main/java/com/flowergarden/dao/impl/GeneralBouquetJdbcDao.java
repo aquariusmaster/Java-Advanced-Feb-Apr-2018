@@ -50,7 +50,7 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
 
     @Override
     public void delete(Integer bouquetId) {
-
+        throw new UnsupportedOperationException();
     }
 
     private List<GeneralBouquet> extractBouquetListFromResultSet(ResultSet rs) {
