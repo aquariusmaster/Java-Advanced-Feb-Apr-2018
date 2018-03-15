@@ -20,7 +20,7 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
     @Override
     public void saveOrUpdate(GeneralBouquet bouquet) {
 
-        if (bouquet != null) {
+        if (bouquet.getId() != null) {
             update(bouquet);
         } else {
             create(bouquet);
