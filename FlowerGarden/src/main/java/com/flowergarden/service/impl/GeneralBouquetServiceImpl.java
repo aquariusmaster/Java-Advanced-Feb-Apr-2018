@@ -24,7 +24,7 @@ public class GeneralBouquetServiceImpl implements GeneralBouquetService {
         GeneralBouquet bouquet = bouquetDao.findOne(bouquetId);
         if (bouquet != null) {
             List<GeneralFlower> flowers = flowerDao.findAllByBouquetId(bouquetId);
-            flowers.stream().forEach(e -> e.setBouquet(bouquet));
+            flowers.forEach(e -> e.setBouquet(bouquet));
             bouquet.setFlowerList(flowers);
         }
         return bouquet;

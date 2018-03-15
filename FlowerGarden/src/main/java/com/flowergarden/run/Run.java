@@ -1,50 +1,32 @@
 package com.flowergarden.run;
 
+import com.flowergarden.dao.GeneralBouquetDao;
 import com.flowergarden.dao.GeneralFlowerDao;
+import com.flowergarden.dao.impl.GeneralBouquetJdbcDao;
 import com.flowergarden.dao.impl.GeneralFlowerJdbcDao;
 import com.flowergarden.dao.impl.JdbcHandler;
-import com.flowergarden.domain.flowers.Chamomile;
-import com.flowergarden.domain.flowers.GeneralFlower;
-import com.flowergarden.domain.properties.FreshnessInteger;
+import com.flowergarden.domain.bouquet.GeneralBouquet;
+import com.flowergarden.service.GeneralBouquetService;
+import com.flowergarden.service.impl.GeneralBouquetServiceImpl;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 
 public class Run {
 
-	public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
 
-		File file = new File("flowergarden.db");
-		String url = "jdbc:sqlite:"+file.getCanonicalFile().toURI();
-		System.out.println(url);
-		try(Connection conn = DriverManager.getConnection(url)) {
-			Statement st = conn.createStatement();
-			ResultSet rs = st.executeQuery("select * from flower");
-			while (rs.next()) {
-				System.out.println(rs.getString(2));
-			}
-			st.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
 
-		JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
-		GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
+        GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
+        GeneralBouquetDao bouquetDao = new GeneralBouquetJdbcDao(jdbcHandler);
+        GeneralBouquetService bouquetService = new GeneralBouquetServiceImpl(bouquetDao, flowerDao);
 
-//		GeneralFlower f = new Chamomile();
-//		f.setFreshness(new FreshnessInteger(4));
-//		flowerDao.saveOrUpdate(f);
-		List<GeneralFlower> flowers = flowerDao.findAll();
-        System.out.println(flowers);
-        List<GeneralFlower> flowers2 = ((GeneralFlowerJdbcDao) flowerDao).findAllByBouquetId(1);
-        System.out.println(flowers2);
+        GeneralBouquet bouquet = bouquetService.findOne(1);
+        System.out.println(bouquet.getPrice());
 
-	}
+        System.out.println(bouquet.getFlowers());
+        bouquet.sortByFreshness();
+        System.out.println(bouquet.getFlowers());
+
+    }
 
 }
