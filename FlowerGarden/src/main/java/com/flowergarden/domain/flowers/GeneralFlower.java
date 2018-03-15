@@ -3,7 +3,7 @@ package com.flowergarden.domain.flowers;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
 import com.flowergarden.domain.properties.FreshnessInteger;
 
-public abstract class GeneralFlower implements Flower<FreshnessInteger>, Comparable<GeneralFlower> {
+public abstract class GeneralFlower implements Flower<Integer>, Comparable<GeneralFlower> {
 
 	private Integer id;
 

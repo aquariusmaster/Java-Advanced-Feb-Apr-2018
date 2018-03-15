@@ -1,7 +1,9 @@
 package com.flowergarden.domain.flowers;
 
+import com.flowergarden.domain.properties.Freshness;
+
 public interface Flower<T> {
-	T getFreshness();
+    Freshness<T> getFreshness();
 	float getPrice();
 	int getLength();
 }
