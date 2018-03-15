@@ -15,6 +15,9 @@ public class JdbcHandler {
     private final String pathToDb;
 
     public JdbcHandler(String dbPath) {
+        if (dbPath == null || dbPath.isEmpty()) {
+            throw new RuntimeException("Path to db cannot be null or empty");
+        }
         this.pathToDb = dbPath;
     }
 
@@ -37,6 +40,7 @@ public class JdbcHandler {
             try {
                 con.close();
             } catch (SQLException e) {
+                //close silently
                 e.printStackTrace();
             }
         }
@@ -48,6 +52,7 @@ public class JdbcHandler {
             try {
                 stmt.close();
             } catch (SQLException e) {
+                //close silently
                 e.printStackTrace();
             }
         }
@@ -59,6 +64,7 @@ public class JdbcHandler {
             try {
                 rs.close();
             } catch (SQLException e) {
+                //close silently
                 e.printStackTrace();
             }
         }

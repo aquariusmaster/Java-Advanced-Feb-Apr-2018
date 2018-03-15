@@ -32,7 +32,7 @@ public class Run {
 			e.printStackTrace();
 		}
 
-		JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
+		JdbcHandler jdbcHandler = new JdbcHandler("");
 		GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
 
 		List<GeneralFlower> flowers = flowerDao.findAll();
