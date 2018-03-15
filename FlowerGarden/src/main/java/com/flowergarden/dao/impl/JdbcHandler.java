@@ -70,15 +70,14 @@ public class JdbcHandler {
     }
 
     public void closeResultSetAndStatementAndConnection(ResultSet rs) {
-        if (rs != null) {
-            try {
-                rs.close();
-                closeStatement(rs.getStatement());
-                releaseConnection(rs.getStatement().getConnection());
-            } catch (SQLException e) {
-                //close silently
-                e.printStackTrace();
-            }
+
+        try {
+            closeResultSet(rs);
+            closeStatement(rs.getStatement());
+            releaseConnection(rs.getStatement().getConnection());
+        } catch (SQLException e) {
+            //close silently
+            e.printStackTrace();
         }
 
     }
