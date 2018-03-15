@@ -3,7 +3,9 @@ package com.flowergarden.run;
 import com.flowergarden.dao.GeneralFlowerDao;
 import com.flowergarden.dao.impl.GeneralFlowerJdbcDao;
 import com.flowergarden.dao.impl.JdbcHandler;
+import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.GeneralFlower;
+import com.flowergarden.domain.properties.FreshnessInteger;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,9 +34,12 @@ public class Run {
 			e.printStackTrace();
 		}
 
-		JdbcHandler jdbcHandler = new JdbcHandler("");
+		JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
 		GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
 
+		GeneralFlower f = new Chamomile();
+		f.setFreshness(new FreshnessInteger(4));
+		flowerDao.saveOrUpdate(f);
 		List<GeneralFlower> flowers = flowerDao.findAll();
         System.out.println(flowers);
 

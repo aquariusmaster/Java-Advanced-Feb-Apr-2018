@@ -1,6 +1,7 @@
 package com.flowergarden.dao.impl;
 
 import com.flowergarden.dao.GeneralFlowerDao;
+import com.flowergarden.domain.bouquet.GeneralBouquet;
 import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.domain.flowers.Rose;
@@ -24,20 +25,12 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     @Override
     public void saveOrUpdate(GeneralFlower flower) {
 
-        switch (flower.getClass().getSimpleName()) {
-            case "Rose":
-                saveOrUpdateRose((Rose) flower);
-                break;
-            case "Chamomile":
-                saveOrUpdateChamomile((Chamomile) flower);
-                break;
-            case "Tulip":
-                saveOrUpdateTulip((Tulip) flower);
-                break;
-            default:
-                throw new RuntimeException("Cannot save flower: " + flower.getClass().getSimpleName() + " type does " +
-                        "not support");
+        if (flower.getId() != null) {
+            update(flower);
+        } else {
+            create(flower);
         }
+
     }
 
     @Override
@@ -67,118 +60,53 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
         throw new UnsupportedOperationException();
     }
 
-    private int saveOrUpdateRose(Rose flower) {
-        if (flower.getId() != null) {
-            return updateRose(flower);
-        } else {
-            return createRose(flower);
-        }
-    }
-
-    private int createRose(Rose flower) {
+    private int create(GeneralFlower flower) {
         final String sql =
-                "INSERT INTO flower (price, length, freshness, spike, name, bouquet_id) " +
-                        "VALUES (?,?,?,?,?,?)";
+                "INSERT INTO flower (name, length, freshness, price, petals, spike, bouquet_id) " +
+                        "VALUES (?,?,?,?,?,?,?)";
+
+        Integer petals = null;
+        if (flower instanceof Chamomile) {
+            Chamomile chamomile = (Chamomile) flower;
+            petals = chamomile.getPetals();
+        }
 
         return jdbcHandler.executeUpdate(sql,
-                flower.getPrice(),
+                flower.getClass().getSimpleName().toLowerCase(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
-                flower.hasSpike(),
-                "rose",
+                flower.getPrice(),
+                petals,
+                flower instanceof Rose ? true : null,
                 flower.getBouquet() != null ? flower.getBouquet().getId() : null);
     }
 
-    private int updateRose(Rose flower) {
+    private int update(GeneralFlower flower) {
         final String sql =
-                "UPDATE flower SET price=?, length=?, freshness=?, spike=?, bouquet_id=? WHERE id=?";
+                "UPDATE flower SET length=?, freshness=?, price=?, petals=?, spike=?, bouquet_id=? WHERE id=?";
+
+        Integer petals = null;
+        if (flower instanceof Chamomile) {
+            Chamomile chamomile = (Chamomile) flower;
+            petals = chamomile.getPetals();
+        }
 
         return jdbcHandler.executeUpdate(sql,
                 flower.getPrice(),
                 flower.getLength(),
                 flower.getFreshness().getFreshness(),
-                flower.hasSpike(),
+                petals,
+                flower instanceof Rose ? true : null,
                 flower.getBouquet() != null ? flower.getBouquet().getId() : null,
                 flower.getId());
     }
 
-    private int saveOrUpdateTulip(Tulip flower) {
-        if (flower.getId() != null) {
-            return updateTulip(flower);
-        } else {
-            return createTulip(flower);
-        }
-    }
-
-    private int createTulip(Tulip flower) {
-
-        final String sql =
-                "INSERT INTO flower (price, length, freshness, name, bouquet_id) " +
-                "VALUES (?,?,?,?,?)";
-
-        return jdbcHandler.executeUpdate(sql,
-                flower.getPrice(),
-                flower.getLength(),
-                flower.getFreshness().getFreshness(),
-                "tulip",
-                flower.getBouquet() != null ? flower.getBouquet().getId() : null);
-    }
-
-    private int updateTulip(Tulip flower) {
-
-        final String sql =
-                "UPDATE flower SET price=?, length=?, freshness=?, bouquet_id=? WHERE id=?";
-
-        return jdbcHandler.executeUpdate(sql,
-                flower.getPrice(),
-                flower.getLength(),
-                flower.getFreshness().getFreshness(),
-                flower.getBouquet() != null ? flower.getBouquet().getId() : null,
-                flower.getId());
-
-    }
-
-    private int saveOrUpdateChamomile(Chamomile flower) {
-        if (flower.getId() != null) {
-            return updateChamomile(flower);
-        } else {
-            return createChamomile(flower);
-        }
-    }
-
-    private int createChamomile(Chamomile flower) {
-
-        final String sql =
-                "INSERT INTO flower (price, length, freshness, petals, name, bouquet_id) " +
-                        "VALUES (?,?,?,?,?,?)";
-
-        return jdbcHandler.executeUpdate(sql,
-                flower.getPrice(),
-                flower.getLength(),
-                flower.getFreshness().getFreshness(),
-                flower.getPetals(),
-                "chamomile",
-                flower.getBouquet() != null ? flower.getBouquet().getId() : null);
-    }
-
-    private int updateChamomile(Chamomile flower) {
-        final String sql =
-                "UPDATE flower SET price=?, length=?, freshness=?, petals=?, bouquet_id=? WHERE id=?";
-
-        return jdbcHandler.executeUpdate(sql,
-                flower.getPrice(),
-                flower.getLength(),
-                flower.getFreshness().getFreshness(),
-                flower.getPetals(),
-                flower.getBouquet() != null ? flower.getBouquet().getId() : null,
-                flower.getId());
-    }
 
     private List<GeneralFlower> extractFlowerListFromResultSet(ResultSet rs) {
 
-        List<GeneralFlower> flowers = new ArrayList<>();
-
         try {
+
+            List<GeneralFlower> flowers = new ArrayList<>();
 
             while (rs.next()) {
 
@@ -226,20 +154,15 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
                 }
 
             }
+
+            return flowers;
+
         } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException("Exception while trying extract Flower list", e);
         } finally {
-            try {
-                jdbcHandler.closeResultSet(rs);
-                jdbcHandler.closeStatement(rs.getStatement());
-                jdbcHandler.releaseConnection(rs.getStatement().getConnection());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            jdbcHandler.closeResultSetAndStatementAndConnection(rs);
         }
 
-        return flowers;
     }
 
 }

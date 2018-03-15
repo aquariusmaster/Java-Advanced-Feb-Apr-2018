@@ -24,15 +24,13 @@ public class JdbcHandler {
     public Connection getConnection() {
 
         File fileToDB = new File(pathToDb);
-        Connection conn = null;
         try {
-            conn = DriverManager.getConnection(
-                    "jdbc:sqlite:"+fileToDB.getCanonicalFile().toURI());
+            return DriverManager.getConnection(
+                    "jdbc:sqlite:" + fileToDB.getCanonicalFile().toURI());
 
         } catch (SQLException | IOException e) {
             throw new RuntimeException("Could not get JDBC Connection", e);
         }
-        return conn;
     }
 
     public void releaseConnection(Connection con) {
@@ -71,13 +69,26 @@ public class JdbcHandler {
 
     }
 
-    public int executeUpdate(String query, Object ...props) {
+    public void closeResultSetAndStatementAndConnection(ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+                closeStatement(rs.getStatement());
+                releaseConnection(rs.getStatement().getConnection());
+            } catch (SQLException e) {
+                //close silently
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    public int executeUpdate(String query, Object... props) {
 
         checkQuery(query, props);
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        int rowsChanged;
 
         try {
             conn = getConnection();
@@ -85,35 +96,36 @@ public class JdbcHandler {
 
             fillStatementByProps(stmt, props);
 
-            rowsChanged = stmt.executeUpdate();
+            return stmt.executeUpdate();
 
         } catch (SQLException e) {
             closeStatement(stmt);
             stmt = null;
             releaseConnection(conn);
             conn = null;
-            e.printStackTrace();
             throw new RuntimeException(e);
         } finally {
             closeStatement(stmt);
             releaseConnection(conn);
         }
 
-        return rowsChanged;
     }
 
-    private void fillStatementByProps(PreparedStatement stmt, Object ...props) throws SQLException {
+    private void fillStatementByProps(PreparedStatement stmt, Object... props) throws SQLException {
 
         if (props != null) {
             for (int i = 0; i < props.length; i++) {
                 Object prop = props[i];
-
                 if (prop instanceof Integer) {
-                    stmt.setInt(i+1, (int) prop);
-                } else if (prop instanceof Float || prop instanceof Double ) {
-                    stmt.setFloat(i+1, (float) prop);
+                    stmt.setInt(i + 1, (int) prop);
+                } else if (prop instanceof Float || prop instanceof Double) {
+                    stmt.setFloat(i + 1, (float) prop);
                 } else if (prop instanceof String) {
-                    stmt.setString(i+1, (String) prop);
+                    stmt.setString(i + 1, (String) prop);
+                } else if (prop instanceof Boolean) {
+                    stmt.setBoolean(i + 1, (boolean) prop);
+                } else if (prop == null) {
+                    stmt.setObject(i + 1, null);
                 } else {
                     throw new MissingFormatArgumentException("Property type do not support");
                 }
@@ -122,7 +134,7 @@ public class JdbcHandler {
 
     }
 
-    public ResultSet executeSelect(String sql, Object ...props) {
+    public ResultSet executeSelect(String sql, Object... props) {
 
         checkQuery(sql, props);
 
@@ -136,21 +148,19 @@ public class JdbcHandler {
 
             fillStatementByProps(stmt, props);
 
-            resultSet = stmt.executeQuery();
+            return stmt.executeQuery();
 
         } catch (SQLException e) {
             closeStatement(stmt);
             stmt = null;
             releaseConnection(conn);
             conn = null;
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
 
-        return resultSet;
     }
 
-    private static void checkQuery(String query, Object ...props) {
+    private static void checkQuery(String query, Object... props) {
         long count = query.chars().filter(ch -> ch == '?').count();
         int propsLength = props != null ? props.length : 0;
         if (count != propsLength) {

@@ -13,8 +13,7 @@ public class FreshnessInteger implements Freshness<Integer>, Comparable<Freshnes
 		this.freshness = freshness;
 	}
 
-	public FreshnessInteger(){
-
+	public FreshnessInteger() {
 	}
 
 	@Override
