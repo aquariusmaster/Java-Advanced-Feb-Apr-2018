@@ -39,7 +39,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
         final String sql = "SELECT * FROM flower WHERE id=?";
         ResultSet rs = jdbcHandler.executeSelect(sql, flowerId);
         List<GeneralFlower> resultList = this.extractFlowerListFromResultSet(rs);
-        if (resultList == null) return null;
+        if (resultList.isEmpty()) return null;
         if (resultList.size() > 1) {
             throw new RuntimeException("Not unique query result");
         }
