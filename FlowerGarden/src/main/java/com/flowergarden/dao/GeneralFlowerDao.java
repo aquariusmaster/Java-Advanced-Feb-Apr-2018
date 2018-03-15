@@ -6,7 +6,12 @@ import java.util.List;
 public interface GeneralFlowerDao {
 
     void saveOrUpdate(GeneralFlower flower);
+
     GeneralFlower findOne(Integer flowerId);
+
     List<GeneralFlower> findAll();
+
     void delete(Integer flowerId);
+
+    List<GeneralFlower> findAllByBouquetId(Integer bouquetId);
 }

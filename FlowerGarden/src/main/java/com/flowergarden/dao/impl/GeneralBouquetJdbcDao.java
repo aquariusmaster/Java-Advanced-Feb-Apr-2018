@@ -20,19 +20,17 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
     @Override
     public void saveOrUpdate(GeneralBouquet bouquet) {
 
-        switch (bouquet.getClass().getSimpleName()) {
-            case "MarriedBouquet":
-                saveOrUpdateMarriedBouquet((MarriedBouquet) bouquet);
-                break;
-            default:
-                throw new RuntimeException("Cannot save bouquet: " + bouquet.getClass().getSimpleName() + " type does not support");
+        if (bouquet != null) {
+            update(bouquet);
+        } else {
+            create(bouquet);
         }
 
     }
 
     @Override
     public GeneralBouquet findOne(Integer bouquetId) {
-        final String sql = "SELECT * FROM flower WHERE id=?";
+        final String sql = "SELECT * FROM bouquet WHERE id=?";
         List<GeneralBouquet> bouquets = extractBouquetListFromResultSet(jdbcHandler.executeSelect(sql, bouquetId));
         if (bouquets == null) return null;
         if (bouquets.size() > 1) {
@@ -95,25 +93,16 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
         return bouquets;
     }
 
-    private int saveOrUpdateMarriedBouquet(MarriedBouquet bouquet) {
-        if (bouquet != null) {
-            return updateBouquet(bouquet);
-        } else {
-            return createBouquet(bouquet);
-        }
-    }
-
-    private int createBouquet(MarriedBouquet bouquet) {
+    private int create(GeneralBouquet bouquet) {
         final String sql =
-                "INSERT INTO flower (assemble_price, name) VALUES (?,?)";
+                "INSERT INTO bouquet (assemble_price, name) VALUES (?,?)";
 
         return jdbcHandler.executeUpdate(sql,
                 bouquet.getAssemblePrice(),
-                "married");
-
+                bouquet.getClass().getSimpleName().toLowerCase());
     }
 
-    private int updateBouquet(MarriedBouquet bouquet) {
+    private int update(GeneralBouquet bouquet) {
         final String sql =
                 "UPDATE bouquet SET assemble_price=? WHERE id=?";
 

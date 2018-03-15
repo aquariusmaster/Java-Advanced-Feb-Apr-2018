@@ -60,6 +60,13 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public List<GeneralFlower> findAllByBouquetId(Integer bouquetId) {
+        final String sql = "SELECT * FROM flower WHERE bouquet_id=?";
+        ResultSet rs = jdbcHandler.executeSelect(sql, bouquetId);
+        return extractFlowerListFromResultSet(rs);
+    }
+
     private int create(GeneralFlower flower) {
         final String sql =
                 "INSERT INTO flower (name, length, freshness, price, petals, spike, bouquet_id) " +

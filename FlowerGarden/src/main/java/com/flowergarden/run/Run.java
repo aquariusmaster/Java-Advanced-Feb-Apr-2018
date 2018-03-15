@@ -37,11 +37,13 @@ public class Run {
 		JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
 		GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
 
-		GeneralFlower f = new Chamomile();
-		f.setFreshness(new FreshnessInteger(4));
-		flowerDao.saveOrUpdate(f);
+//		GeneralFlower f = new Chamomile();
+//		f.setFreshness(new FreshnessInteger(4));
+//		flowerDao.saveOrUpdate(f);
 		List<GeneralFlower> flowers = flowerDao.findAll();
         System.out.println(flowers);
+        List<GeneralFlower> flowers2 = ((GeneralFlowerJdbcDao) flowerDao).findAllByBouquetId(1);
+        System.out.println(flowers2);
 
 	}
 
