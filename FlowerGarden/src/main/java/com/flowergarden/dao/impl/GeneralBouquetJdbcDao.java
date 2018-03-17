@@ -1,12 +1,9 @@
 package com.flowergarden.dao.impl;
 
 import com.flowergarden.dao.GeneralBouquetDao;
+import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
-import com.flowergarden.domain.bouquet.MarriedBouquet;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
@@ -30,9 +27,12 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
 
     @Override
     public GeneralBouquet findOne(Integer bouquetId) {
-        final String sql = "SELECT * FROM bouquet WHERE id=?";
-        List<GeneralBouquet> bouquets = extractBouquetListFromResultSet(jdbcHandler.executeSelect(sql, bouquetId));
-        if (bouquets == null) return null;
+        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER + " WHERE bouquet_id=?";
+        List<GeneralBouquet> bouquets = new GeneralBouquetExtractor().extract(jdbcHandler
+                .executeSelect(sql, bouquetId));
+        if (bouquets == null) {
+            return null;
+        }
         if (bouquets.size() > 1) {
             throw new RuntimeException("Not unique query result");
         }
@@ -40,57 +40,15 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
     }
 
     @Override
-    public List<GeneralBouquet> findAll(Integer bouquetId) {
-        final String sql = "SELECT * FROM flower";
+    public List<GeneralBouquet> findAll() {
+        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER;
 
-        return extractBouquetListFromResultSet(jdbcHandler.executeSelect(sql));
+        return new GeneralBouquetExtractor().extract(jdbcHandler.executeSelect(sql));
     }
 
     @Override
     public void delete(Integer bouquetId) {
         throw new UnsupportedOperationException();
-    }
-
-    private List<GeneralBouquet> extractBouquetListFromResultSet(ResultSet rs) {
-
-        List<GeneralBouquet> bouquets = new ArrayList<>();
-
-        try {
-
-            while (rs.next()) {
-
-                Integer id = rs.getInt("id");
-                Float assemble_price = rs.getFloat("assemble_price");
-                String type = rs.getString("name");
-
-                switch (type) {
-
-                    case "married":
-                        MarriedBouquet marriedBouquet = new MarriedBouquet();
-                        marriedBouquet.setId(id);
-                        marriedBouquet.setAssemblePrice(assemble_price);
-
-                        bouquets.add(marriedBouquet);
-                        break;
-                    default:
-                        throw new RuntimeException("Cannot get bouquet: " + type + " type does not support");
-                }
-
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                jdbcHandler.closeResultSet(rs);
-                jdbcHandler.closeStatement(rs.getStatement());
-                jdbcHandler.releaseConnection(rs.getStatement().getConnection());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return bouquets;
     }
 
     private int create(GeneralBouquet bouquet) {

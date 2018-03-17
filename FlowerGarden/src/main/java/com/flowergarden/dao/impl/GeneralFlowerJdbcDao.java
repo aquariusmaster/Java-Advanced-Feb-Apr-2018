@@ -1,15 +1,12 @@
 package com.flowergarden.dao.impl;
 
 import com.flowergarden.dao.GeneralFlowerDao;
+import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.domain.flowers.Rose;
-import com.flowergarden.domain.flowers.Tulip;
-import com.flowergarden.domain.properties.FreshnessInteger;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -35,9 +32,9 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     @Override
     public GeneralFlower findOne(Integer flowerId) {
 
-        final String sql = "SELECT * FROM flower WHERE id=?";
+        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER + " WHERE flower_id=?";
         ResultSet rs = jdbcHandler.executeSelect(sql, flowerId);
-        List<GeneralFlower> resultList = this.extractFlowerListFromResultSet(rs);
+        List<GeneralFlower> resultList = new GeneralFlowerExtractor().extract(rs);
         if (resultList.isEmpty()) return null;
         if (resultList.size() > 1) {
             throw new RuntimeException("Not unique query result");
@@ -48,9 +45,9 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     @Override
     public List<GeneralFlower> findAll() {
 
-        final String sql = "SELECT * FROM flower";
+        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER;
         ResultSet rs = jdbcHandler.executeSelect(sql);
-        return extractFlowerListFromResultSet(rs);
+        return new GeneralFlowerExtractor().extract(rs);
 
     }
 
@@ -61,9 +58,9 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
     @Override
     public List<GeneralFlower> findAllByBouquetId(Integer bouquetId) {
-        final String sql = "SELECT * FROM flower WHERE bouquet_id=?";
+        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER +" WHERE bouquet_id=?";
         ResultSet rs = jdbcHandler.executeSelect(sql, bouquetId);
-        return extractFlowerListFromResultSet(rs);
+        return new GeneralFlowerExtractor().extract(rs);
     }
 
     private int create(GeneralFlower flower) {
@@ -104,70 +101,6 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
                 flower instanceof Rose ? true : null,
                 flower.getBouquet() != null ? flower.getBouquet().getId() : null,
                 flower.getId());
-    }
-
-
-    private List<GeneralFlower> extractFlowerListFromResultSet(ResultSet rs) {
-
-        try {
-
-            List<GeneralFlower> flowers = new ArrayList<>();
-
-            while (rs.next()) {
-
-                Integer id = rs.getInt("id");
-                Float price = rs.getFloat("price");
-                Integer length = rs.getInt("length");
-                FreshnessInteger freshness = new FreshnessInteger(rs.getInt("freshness"));
-                String type = rs.getString("name");
-
-                switch (type) {
-
-                    case "rose":
-                        Rose rose = new Rose();
-                        rose.setId(id);
-                        rose.setPrice(price);
-                        rose.setLength(length);
-                        rose.setFreshness(freshness);
-                        Boolean spike = rs.getBoolean("spike");
-                        rose.setSpike(spike);
-
-                        flowers.add(rose);
-                        break;
-                    case "chamomile":
-                        Chamomile chamomile = new Chamomile();
-                        Integer petals = rs.getInt("petals");
-                        chamomile.setPetals(petals);
-                        chamomile.setId(id);
-                        chamomile.setPrice(price);
-                        chamomile.setLength(length);
-                        chamomile.setFreshness(freshness);
-
-                        flowers.add(chamomile);
-                        break;
-                    case "tulip":
-                        Tulip tulip = new Tulip();
-                        tulip.setId(id);
-                        tulip.setPrice(price);
-                        tulip.setLength(length);
-                        tulip.setFreshness(freshness);
-
-                        flowers.add(tulip);
-                        break;
-                    default:
-                        throw new RuntimeException("Cannot get flower: " + type + " type does not support");
-                }
-
-            }
-
-            return flowers;
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Exception while trying extract Flower list", e);
-        } finally {
-            jdbcHandler.closeResultSetAndStatementAndConnection(rs);
-        }
-
     }
 
 }

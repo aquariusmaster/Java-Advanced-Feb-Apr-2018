@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class GeneralBouquet implements Bouquet<GeneralFlower> {
 
@@ -68,4 +69,29 @@ public abstract class GeneralBouquet implements Bouquet<GeneralFlower> {
         return flowerList;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        GeneralBouquet bouquet = (GeneralBouquet) o;
+        return Objects.equals(id, bouquet.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "GeneralBouquet{" +
+                "id=" + id +
+                ", assemblePrice=" + assemblePrice +
+                '}';
+    }
 }

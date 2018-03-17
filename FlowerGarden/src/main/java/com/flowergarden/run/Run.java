@@ -27,7 +27,10 @@ public class Run {
         GeneralFlowerService flowerService = new GeneralFlowerServiceImpl(bouquetDao, flowerDao);
 
         GeneralBouquet bouquet = bouquetService.findOne(1);
+        System.out.println(bouquet);
+        System.out.println(bouquet.getFlowers());
         System.out.println(bouquet.getPrice());
+
 
         System.out.println(bouquet.getFlowers());
         bouquet.sortByFreshness();
@@ -35,6 +38,11 @@ public class Run {
 
         List<GeneralFlower> flowers = flowerService.findAllByBouquetAndLengthIn(1, 10, 12);
         System.out.println(flowers);
+
+        GeneralFlower flower = flowerService.findOne(7);
+        System.out.println(flower);
+
+        System.out.println(flowerDao.findAll());
 
     }
 

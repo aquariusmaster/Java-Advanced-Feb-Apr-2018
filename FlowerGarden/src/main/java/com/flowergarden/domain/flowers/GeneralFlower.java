@@ -77,9 +77,10 @@ public abstract class GeneralFlower implements Flower<Integer>, Comparable<Gener
 	public String toString() {
 		return "GeneralFlower{" +
 				"id=" + id +
-				", freshness=" + freshness +
+				", freshness=" + freshness.getFreshness() +
 				", price=" + price +
 				", length=" + length +
+				", bouquetId=" + (bouquet != null ? bouquet.getId() : null) +
 				'}';
 	}
 }

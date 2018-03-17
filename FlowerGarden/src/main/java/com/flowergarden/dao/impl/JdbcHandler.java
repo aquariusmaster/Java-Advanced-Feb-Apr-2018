@@ -33,7 +33,7 @@ public class JdbcHandler {
         }
     }
 
-    public void releaseConnection(Connection con) {
+    public static void releaseConnection(Connection con) {
         if (con != null) {
             try {
                 con.close();
@@ -45,7 +45,7 @@ public class JdbcHandler {
 
     }
 
-    public void closeStatement(Statement stmt) {
+    public static void closeStatement(Statement stmt) {
         if (stmt != null) {
             try {
                 stmt.close();
@@ -57,7 +57,7 @@ public class JdbcHandler {
 
     }
 
-    public void closeResultSet(ResultSet rs) {
+    public static void closeResultSet(ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
@@ -69,7 +69,7 @@ public class JdbcHandler {
 
     }
 
-    public void closeResultSetAndStatementAndConnection(ResultSet rs) {
+    public static void closeResultSetAndStatementAndConnection(ResultSet rs) {
 
         try {
             closeResultSet(rs);

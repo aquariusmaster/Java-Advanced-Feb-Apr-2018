@@ -8,6 +8,6 @@ public interface GeneralBouquetDao {
 
     void saveOrUpdate(GeneralBouquet bouquet);
     GeneralBouquet findOne(Integer bouquetId);
-    List<GeneralBouquet> findAll(Integer bouquetId);
+    List<GeneralBouquet> findAll();
     void delete(Integer bouquetId);
 }
