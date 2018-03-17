@@ -1,7 +1,6 @@
 package com.flowergarden.dao.impl;
 
 import com.flowergarden.dao.GeneralFlowerDao;
-import com.flowergarden.domain.bouquet.GeneralBouquet;
 import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.domain.flowers.Rose;
@@ -74,8 +73,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
         Integer petals = null;
         if (flower instanceof Chamomile) {
-            Chamomile chamomile = (Chamomile) flower;
-            petals = chamomile.getPetals();
+            petals = ((Chamomile) flower).getPetals();
         }
 
         return jdbcHandler.executeUpdate(sql,

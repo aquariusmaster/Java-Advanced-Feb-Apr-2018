@@ -86,49 +86,15 @@ public class JdbcHandler {
 
         checkQuery(query, props);
 
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            conn = getConnection();
-            stmt = conn.prepareStatement(query);
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)){
 
             fillStatementByProps(stmt, props);
 
             return stmt.executeUpdate();
 
         } catch (SQLException e) {
-            closeStatement(stmt);
-            stmt = null;
-            releaseConnection(conn);
-            conn = null;
             throw new RuntimeException(e);
-        } finally {
-            closeStatement(stmt);
-            releaseConnection(conn);
-        }
-
-    }
-
-    private void fillStatementByProps(PreparedStatement stmt, Object... props) throws SQLException {
-
-        if (props != null) {
-            for (int i = 0; i < props.length; i++) {
-                Object prop = props[i];
-                if (prop instanceof Integer) {
-                    stmt.setInt(i + 1, (int) prop);
-                } else if (prop instanceof Float || prop instanceof Double) {
-                    stmt.setFloat(i + 1, (float) prop);
-                } else if (prop instanceof String) {
-                    stmt.setString(i + 1, (String) prop);
-                } else if (prop instanceof Boolean) {
-                    stmt.setBoolean(i + 1, (boolean) prop);
-                } else if (prop == null) {
-                    stmt.setObject(i + 1, null);
-                } else {
-                    throw new MissingFormatArgumentException("Property type do not support");
-                }
-            }
         }
 
     }
@@ -164,6 +130,29 @@ public class JdbcHandler {
         int propsLength = props != null ? props.length : 0;
         if (count != propsLength) {
             throw new RuntimeException("Mismatch statement count");
+        }
+
+    }
+
+    private void fillStatementByProps(PreparedStatement stmt, Object... props) throws SQLException {
+
+        if (props != null) {
+            for (int i = 0; i < props.length; i++) {
+                Object prop = props[i];
+                if (prop instanceof Integer) {
+                    stmt.setInt(i + 1, (int) prop);
+                } else if (prop instanceof Float || prop instanceof Double) {
+                    stmt.setFloat(i + 1, (float) prop);
+                } else if (prop instanceof String) {
+                    stmt.setString(i + 1, (String) prop);
+                } else if (prop instanceof Boolean) {
+                    stmt.setBoolean(i + 1, (boolean) prop);
+                } else if (prop == null) {
+                    stmt.setObject(i + 1, null);
+                } else {
+                    throw new MissingFormatArgumentException("Property type do not support");
+                }
+            }
         }
 
     }
