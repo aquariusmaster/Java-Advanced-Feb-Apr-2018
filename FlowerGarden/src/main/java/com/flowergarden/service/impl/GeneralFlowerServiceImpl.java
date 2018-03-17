@@ -1,6 +1,5 @@
 package com.flowergarden.service.impl;
 
-import com.flowergarden.dao.GeneralBouquetDao;
 import com.flowergarden.dao.GeneralFlowerDao;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.service.GeneralFlowerService;
@@ -10,12 +9,9 @@ import java.util.stream.Collectors;
 
 public class GeneralFlowerServiceImpl implements GeneralFlowerService {
 
-    private final GeneralBouquetDao bouquetDao;
-
     private final GeneralFlowerDao flowerDao;
 
-    public GeneralFlowerServiceImpl(GeneralBouquetDao bouquetDao, GeneralFlowerDao flowerDao) {
-        this.bouquetDao = bouquetDao;
+    public GeneralFlowerServiceImpl(GeneralFlowerDao flowerDao) {
         this.flowerDao = flowerDao;
     }
 

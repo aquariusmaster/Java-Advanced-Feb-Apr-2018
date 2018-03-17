@@ -24,13 +24,12 @@ public class Run {
         GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
         GeneralBouquetDao bouquetDao = new GeneralBouquetJdbcDao(jdbcHandler);
         GeneralBouquetService bouquetService = new GeneralBouquetServiceImpl(bouquetDao);
-        GeneralFlowerService flowerService = new GeneralFlowerServiceImpl(bouquetDao, flowerDao);
+        GeneralFlowerService flowerService = new GeneralFlowerServiceImpl(flowerDao);
 
         GeneralBouquet bouquet = bouquetService.findOne(1);
         System.out.println(bouquet);
         System.out.println(bouquet.getFlowers());
         System.out.println(bouquet.getPrice());
-
 
         System.out.println(bouquet.getFlowers());
         bouquet.sortByFreshness();
