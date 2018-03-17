@@ -6,8 +6,13 @@ import com.flowergarden.dao.impl.GeneralBouquetJdbcDao;
 import com.flowergarden.dao.impl.GeneralFlowerJdbcDao;
 import com.flowergarden.dao.impl.JdbcHandler;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
+import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.service.GeneralBouquetService;
+import com.flowergarden.service.GeneralFlowerService;
 import com.flowergarden.service.impl.GeneralBouquetServiceImpl;
+import com.flowergarden.service.impl.GeneralFlowerServiceImpl;
+
+import java.util.List;
 
 
 public class Run {
@@ -19,6 +24,7 @@ public class Run {
         GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
         GeneralBouquetDao bouquetDao = new GeneralBouquetJdbcDao(jdbcHandler);
         GeneralBouquetService bouquetService = new GeneralBouquetServiceImpl(bouquetDao, flowerDao);
+        GeneralFlowerService flowerService = new GeneralFlowerServiceImpl(bouquetDao, flowerDao);
 
         GeneralBouquet bouquet = bouquetService.findOne(1);
         System.out.println(bouquet.getPrice());
@@ -26,6 +32,9 @@ public class Run {
         System.out.println(bouquet.getFlowers());
         bouquet.sortByFreshness();
         System.out.println(bouquet.getFlowers());
+
+        List<GeneralFlower> flowers = flowerService.findAllByBouquetAndLengthIn(1, 10, 12);
+        System.out.println(flowers);
 
     }
 
