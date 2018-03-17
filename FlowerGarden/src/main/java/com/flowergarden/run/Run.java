@@ -23,7 +23,7 @@ public class Run {
 
         GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
         GeneralBouquetDao bouquetDao = new GeneralBouquetJdbcDao(jdbcHandler);
-        GeneralBouquetService bouquetService = new GeneralBouquetServiceImpl(bouquetDao, flowerDao);
+        GeneralBouquetService bouquetService = new GeneralBouquetServiceImpl(bouquetDao);
         GeneralFlowerService flowerService = new GeneralFlowerServiceImpl(bouquetDao, flowerDao);
 
         GeneralBouquet bouquet = bouquetService.findOne(1);
