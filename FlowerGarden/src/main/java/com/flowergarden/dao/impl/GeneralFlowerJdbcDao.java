@@ -32,7 +32,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     @Override
     public GeneralFlower findOne(Integer flowerId) {
 
-        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER + " WHERE flower_id=?";
+        final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET + " WHERE flower_id=?";
         ResultSet rs = jdbcHandler.executeSelect(sql, flowerId);
         List<GeneralFlower> resultList = new GeneralFlowerExtractor().extract(rs);
         if (resultList.isEmpty()) return null;
@@ -45,7 +45,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     @Override
     public List<GeneralFlower> findAll() {
 
-        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER;
+        final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET;
         ResultSet rs = jdbcHandler.executeSelect(sql);
         return new GeneralFlowerExtractor().extract(rs);
 
@@ -58,7 +58,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
     @Override
     public List<GeneralFlower> findAllByBouquetId(Integer bouquetId) {
-        final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER +" WHERE bouquet_id=?";
+        final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET +" WHERE bouquet_id=?";
         ResultSet rs = jdbcHandler.executeSelect(sql, bouquetId);
         return new GeneralFlowerExtractor().extract(rs);
     }
