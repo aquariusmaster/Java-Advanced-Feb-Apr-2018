@@ -3,17 +3,17 @@ package com.flowergarden.dao.impl;
 import com.flowergarden.dao.GeneralBouquetDao;
 import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository("bouquetDao")
 public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
 
     private final JdbcHandler jdbcHandler;
+    private final GeneralBouquetExtractor bouquetExtractor;
 
-    public GeneralBouquetJdbcDao(JdbcHandler jdbcHandler) {
+    public GeneralBouquetJdbcDao(JdbcHandler jdbcHandler, GeneralBouquetExtractor bouquetExtractor) {
         this.jdbcHandler = jdbcHandler;
+        this.bouquetExtractor = bouquetExtractor;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
     @Override
     public GeneralBouquet findOne(Integer bouquetId) {
         final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER + " WHERE bouquet_id=?";
-        List<GeneralBouquet> bouquets = new GeneralBouquetExtractor().extract(jdbcHandler
+        List<GeneralBouquet> bouquets = bouquetExtractor.extract(jdbcHandler
                 .executeSelect(sql, bouquetId));
         if (bouquets == null) {
             return null;
@@ -45,7 +45,7 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
     public List<GeneralBouquet> findAll() {
         final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER;
 
-        return new GeneralBouquetExtractor().extract(jdbcHandler.executeSelect(sql));
+        return bouquetExtractor.extract(jdbcHandler.executeSelect(sql));
     }
 
     @Override

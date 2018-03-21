@@ -5,18 +5,18 @@ import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.domain.flowers.Rose;
-import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.util.List;
 
-@Repository("flowerDao")
 public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
     private final JdbcHandler jdbcHandler;
+    private final GeneralFlowerExtractor flowerExtractor;
 
-    public GeneralFlowerJdbcDao(JdbcHandler jdbcHandler) {
+    public GeneralFlowerJdbcDao(JdbcHandler jdbcHandler, GeneralFlowerExtractor flowerExtractor) {
         this.jdbcHandler = jdbcHandler;
+        this.flowerExtractor = flowerExtractor;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
         final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET + " WHERE flower_id=?";
         ResultSet rs = jdbcHandler.executeSelect(sql, flowerId);
-        List<GeneralFlower> resultList = new GeneralFlowerExtractor().extract(rs);
+        List<GeneralFlower> resultList = flowerExtractor.extract(rs);
         if (resultList.isEmpty()) return null;
         if (resultList.size() > 1) {
             throw new RuntimeException("Not unique query result");
@@ -48,7 +48,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
         final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET;
         ResultSet rs = jdbcHandler.executeSelect(sql);
-        return new GeneralFlowerExtractor().extract(rs);
+        return flowerExtractor.extract(rs);
 
     }
 
@@ -61,7 +61,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     public List<GeneralFlower> findAllByBouquetId(Integer bouquetId) {
         final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET +" WHERE bouquet_id=?";
         ResultSet rs = jdbcHandler.executeSelect(sql, bouquetId);
-        return new GeneralFlowerExtractor().extract(rs);
+        return flowerExtractor.extract(rs);
     }
 
     private int create(GeneralFlower flower) {

@@ -17,12 +17,20 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
+    <bean id="bouquetExtractor" class="com.flowergarden.dao.impl.GeneralBouquetExtractor">
+    </bean>
+
     <bean id="bouquetDao" class="com.flowergarden.dao.impl.GeneralBouquetJdbcDao">
         <constructor-arg ref="jdbcHandler"/>
+        <constructor-arg ref="bouquetExtractor"/>
+    </bean>
+
+    <bean id="flowerExtractor" class="com.flowergarden.dao.impl.GeneralFlowerExtractor">
     </bean>
 
     <bean id="flowerDao" class="com.flowergarden.dao.impl.GeneralFlowerJdbcDao">
         <constructor-arg ref="jdbcHandler"/>
+        <constructor-arg ref="flowerExtractor"/>
     </bean>
 
 </beans>
