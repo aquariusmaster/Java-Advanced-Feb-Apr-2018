@@ -1,5 +1,9 @@
 package com.flowergarden.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -10,25 +14,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.MissingFormatArgumentException;
 
+@Component("jdbcHandler")
 public class JdbcHandler {
 
-    private final String pathToDb;
+    private DataSource dataSource;
 
-    public JdbcHandler(String dbPath) {
-        if (dbPath == null || dbPath.isEmpty()) {
-            throw new RuntimeException("Path to db cannot be null or empty");
-        }
-        this.pathToDb = dbPath;
+    public JdbcHandler(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public Connection getConnection() {
 
-        File fileToDB = new File(pathToDb);
         try {
-            return DriverManager.getConnection(
-                    "jdbc:sqlite:" + fileToDB.getCanonicalFile().toURI());
+            return dataSource.getConnection();
 
-        } catch (SQLException | IOException e) {
+        } catch (SQLException e) {
             throw new RuntimeException("Could not get JDBC Connection", e);
         }
     }
@@ -108,7 +108,7 @@ public class JdbcHandler {
         ResultSet resultSet = null;
 
         try {
-            conn = getConnection();
+            conn = dataSource.getConnection();
             stmt = conn.prepareStatement(sql);
 
             fillStatementByProps(stmt, props);

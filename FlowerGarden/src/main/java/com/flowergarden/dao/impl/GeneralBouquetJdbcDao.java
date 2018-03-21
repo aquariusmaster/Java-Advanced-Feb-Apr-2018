@@ -3,9 +3,11 @@ package com.flowergarden.dao.impl;
 import com.flowergarden.dao.GeneralBouquetDao;
 import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository("bouquetDao")
 public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
 
     private final JdbcHandler jdbcHandler;

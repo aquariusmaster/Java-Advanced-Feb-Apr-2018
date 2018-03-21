@@ -11,6 +11,8 @@ import com.flowergarden.service.GeneralBouquetService;
 import com.flowergarden.service.GeneralFlowerService;
 import com.flowergarden.service.impl.GeneralBouquetServiceImpl;
 import com.flowergarden.service.impl.GeneralFlowerServiceImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
 
@@ -19,29 +21,39 @@ public class Run {
 
     public static void main(String[] args) {
 
-        JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
+//        JdbcHandler jdbcHandler = new JdbcHandler("flowergarden.db");
+//
+//        GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
+//        GeneralBouquetDao bouquetDao = new GeneralBouquetJdbcDao(jdbcHandler);
+//        GeneralBouquetService bouquetService = new GeneralBouquetServiceImpl(bouquetDao);
+//        GeneralFlowerService flowerService = new GeneralFlowerServiceImpl(flowerDao);
+//
+//        GeneralBouquet bouquet = bouquetService.findOne(1);
+//        System.out.println(bouquet);
+//        System.out.println(bouquet.getFlowers());
+//        System.out.println(bouquet.getPrice());
+//
+//        System.out.println(bouquet.getFlowers());
+//        bouquet.sortByFreshness();
+//        System.out.println(bouquet.getFlowers());
+//
+//        List<GeneralFlower> flowers = flowerService.findAllByBouquetAndLengthIn(1, 10, 12);
+//        System.out.println(flowers);
+//
+//        GeneralFlower flower = flowerService.findOne(7);
+//        System.out.println(flower);
+//
+//        System.out.println(flowerDao.findAll());
 
-        GeneralFlowerDao flowerDao = new GeneralFlowerJdbcDao(jdbcHandler);
-        GeneralBouquetDao bouquetDao = new GeneralBouquetJdbcDao(jdbcHandler);
-        GeneralBouquetService bouquetService = new GeneralBouquetServiceImpl(bouquetDao);
-        GeneralFlowerService flowerService = new GeneralFlowerServiceImpl(flowerDao);
+        ApplicationContext context = new ClassPathXmlApplicationContext("app-context.xml");
 
-        GeneralBouquet bouquet = bouquetService.findOne(1);
-        System.out.println(bouquet);
-        System.out.println(bouquet.getFlowers());
-        System.out.println(bouquet.getPrice());
+        JdbcHandler jdbcHandler = (JdbcHandler) context.getBean("jdbcHandler");
 
-        System.out.println(bouquet.getFlowers());
-        bouquet.sortByFreshness();
-        System.out.println(bouquet.getFlowers());
-
-        List<GeneralFlower> flowers = flowerService.findAllByBouquetAndLengthIn(1, 10, 12);
-        System.out.println(flowers);
-
-        GeneralFlower flower = flowerService.findOne(7);
-        System.out.println(flower);
+        GeneralFlowerDao flowerDao = context.getBean("flowerDao", GeneralFlowerJdbcDao.class);
+        GeneralBouquetDao bouquetDao = context.getBean("bouquetDao", GeneralBouquetJdbcDao.class);
 
         System.out.println(flowerDao.findAll());
+
 
     }
 
