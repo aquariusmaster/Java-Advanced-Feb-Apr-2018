@@ -5,15 +5,19 @@ import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.domain.flowers.Rose;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.util.List;
 
+@Repository
 public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
     private final JdbcHandler jdbcHandler;
     private final GeneralFlowerExtractor flowerExtractor;
 
+    @Autowired
     public GeneralFlowerJdbcDao(JdbcHandler jdbcHandler, GeneralFlowerExtractor flowerExtractor) {
         this.jdbcHandler = jdbcHandler;
         this.flowerExtractor = flowerExtractor;

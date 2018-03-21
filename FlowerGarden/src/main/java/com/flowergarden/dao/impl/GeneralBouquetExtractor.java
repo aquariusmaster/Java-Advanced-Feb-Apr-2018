@@ -6,6 +6,7 @@ import com.flowergarden.domain.flowers.Chamomile;
 import com.flowergarden.domain.flowers.Rose;
 import com.flowergarden.domain.flowers.Tulip;
 import com.flowergarden.domain.properties.FreshnessInteger;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class GeneralBouquetExtractor {
 
     public List<GeneralBouquet> extract(ResultSet rs) {

@@ -47,10 +47,10 @@ public class Run {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("app-context.xml");
 
-        JdbcHandler jdbcHandler = (JdbcHandler) context.getBean("jdbcHandler");
+        JdbcHandler jdbcHandler = context.getBean(JdbcHandler.class);
 
-        GeneralFlowerDao flowerDao = context.getBean("flowerDao", GeneralFlowerJdbcDao.class);
-        GeneralBouquetDao bouquetDao = context.getBean("bouquetDao", GeneralBouquetJdbcDao.class);
+        GeneralFlowerDao flowerDao = context.getBean(GeneralFlowerJdbcDao.class);
+        GeneralBouquetDao bouquetDao = context.getBean(GeneralBouquetJdbcDao.class);
 
         System.out.println(flowerDao.findAll());
 

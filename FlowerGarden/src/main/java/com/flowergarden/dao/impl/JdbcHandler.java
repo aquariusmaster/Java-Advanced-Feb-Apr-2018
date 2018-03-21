@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.MissingFormatArgumentException;
 
-@Component("jdbcHandler")
+@Component
 public class JdbcHandler {
 
     private DataSource dataSource;
