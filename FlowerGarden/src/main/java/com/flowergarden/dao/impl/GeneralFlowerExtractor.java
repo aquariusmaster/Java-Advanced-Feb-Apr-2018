@@ -28,9 +28,9 @@ public class GeneralFlowerExtractor {
 
             while (rs.next()) {
 
-                Integer id = rs.getInt("flower_id");
-                Float price = rs.getFloat("price");
-                Integer length = rs.getInt("length");
+                int id = rs.getInt("flower_id");
+                float price = rs.getFloat("price");
+                int length = rs.getInt("length");
                 FreshnessInteger freshness = new FreshnessInteger(rs.getInt("freshness"));
                 String flowerType = rs.getString("flower_name");
 
@@ -69,11 +69,11 @@ public class GeneralFlowerExtractor {
                         throw new RuntimeException("Cannot get flower: " + flowerType + " type does not support");
                 }
 
-                Integer bouquetId = rs.getInt("bouquet_id");
+                int bouquetId = rs.getInt("bouquet_id");
                 if (bouquetId != 0) {
 
                     String bouquetType = rs.getString("bouquet_name");
-                    Float assemble_price = rs.getFloat("assemble_price");
+                    float assemble_price = rs.getFloat("assemble_price");
 
                     GeneralBouquet bouquet = extractedBouquets.get(bouquetId);
 
