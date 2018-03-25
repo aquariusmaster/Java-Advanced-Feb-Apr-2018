@@ -12,9 +12,8 @@ public class Run {
 
     public static void main(String[] args) {
 
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.scan("com.flowergarden");
-        context.refresh();
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext("com.flowergarden");
 
         JdbcHandler jdbcHandler = context.getBean(JdbcHandler.class);
 
