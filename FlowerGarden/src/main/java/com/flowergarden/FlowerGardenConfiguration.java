@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 @PropertySource("classpath:/application.properties")
 public class FlowerGardenConfiguration {
 
-    @Value( "${jdbc.url}" )
+    @Value("${jdbc.url}")
     private String jdbcUrl;
 
     @Bean
