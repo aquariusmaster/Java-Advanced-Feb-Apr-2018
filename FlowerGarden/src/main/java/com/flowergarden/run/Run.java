@@ -12,6 +12,7 @@ import com.flowergarden.service.GeneralFlowerService;
 import com.flowergarden.service.impl.GeneralBouquetServiceImpl;
 import com.flowergarden.service.impl.GeneralFlowerServiceImpl;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
@@ -45,7 +46,8 @@ public class Run {
 //
 //        System.out.println(flowerDao.findAll());
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("app-context.xml");
+//        ApplicationContext context = new ClassPathXmlApplicationContext("app-context.xml");
+        ApplicationContext context = new AnnotationConfigApplicationContext();
 
         JdbcHandler jdbcHandler = context.getBean(JdbcHandler.class);
 

@@ -1,5 +1,6 @@
 package com.flowergarden.dao.impl;
 
+import com.flowergarden.annotations.WorkMeter;
 import com.flowergarden.dao.GeneralFlowerDao;
 import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.flowers.Chamomile;
@@ -48,6 +49,7 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     }
 
     @Override
+    @WorkMeter
     public List<GeneralFlower> findAll() {
 
         final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET;

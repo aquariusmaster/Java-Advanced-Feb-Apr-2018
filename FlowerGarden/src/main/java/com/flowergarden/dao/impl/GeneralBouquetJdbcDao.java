@@ -1,5 +1,6 @@
 package com.flowergarden.dao.impl;
 
+import com.flowergarden.annotations.WorkMeter;
 import com.flowergarden.dao.GeneralBouquetDao;
 import com.flowergarden.dao.impl.sql_queries.SqlQueries;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
@@ -31,6 +32,7 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
 
     }
 
+    @WorkMeter
     @Override
     public GeneralBouquet findOne(Integer bouquetId) {
         final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER + " WHERE bouquet_id=?";
