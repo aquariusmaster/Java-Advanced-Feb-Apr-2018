@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.util.List;
 
+@WorkMeter
 @Repository
 public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
 
@@ -49,7 +50,6 @@ public class GeneralFlowerJdbcDao implements GeneralFlowerDao {
     }
 
     @Override
-    @WorkMeter
     public List<GeneralFlower> findAll() {
 
         final String sql = SqlQueries.SELECT_FLOWER_JOIN_BOUQUET;

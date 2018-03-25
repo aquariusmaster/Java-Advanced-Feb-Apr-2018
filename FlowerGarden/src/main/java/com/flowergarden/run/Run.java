@@ -15,12 +15,15 @@ public class Run {
         AnnotationConfigApplicationContext context =
                 new AnnotationConfigApplicationContext("com.flowergarden");
 
-        JdbcHandler jdbcHandler = context.getBean(JdbcHandler.class);
+//        JdbcHandler jdbcHandler = context.getBean(JdbcHandler.class);
 
-        GeneralFlowerDao flowerDao = context.getBean(GeneralFlowerJdbcDao.class);
-        GeneralBouquetDao bouquetDao = context.getBean(GeneralBouquetJdbcDao.class);
+        GeneralFlowerDao flowerDao = context.getBean(GeneralFlowerDao.class);
+        GeneralBouquetDao bouquetDao = context.getBean(GeneralBouquetDao.class);
 
         System.out.println(flowerDao.findAll());
+        System.out.println(flowerDao.findOne(1));
+        System.out.println(flowerDao.findAll());
+        System.out.println(flowerDao.findOne(2));
 
 
     }

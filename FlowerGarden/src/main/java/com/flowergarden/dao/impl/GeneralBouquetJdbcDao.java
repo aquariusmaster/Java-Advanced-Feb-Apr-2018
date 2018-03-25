@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@WorkMeter
 @Repository
 public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
 
@@ -32,7 +33,6 @@ public class GeneralBouquetJdbcDao implements GeneralBouquetDao {
 
     }
 
-    @WorkMeter
     @Override
     public GeneralBouquet findOne(Integer bouquetId) {
         final String sql = SqlQueries.SELECT_BOUQUET_JOIN_FLOWER + " WHERE bouquet_id=?";
