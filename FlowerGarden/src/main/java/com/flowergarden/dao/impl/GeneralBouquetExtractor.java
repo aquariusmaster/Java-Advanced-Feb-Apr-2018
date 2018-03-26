@@ -1,5 +1,6 @@
 package com.flowergarden.dao.impl;
 
+import com.flowergarden.dao.ResultSetExtractor;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
 import com.flowergarden.domain.bouquet.MarriedBouquet;
 import com.flowergarden.domain.flowers.Chamomile;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class GeneralBouquetExtractor {
+public class GeneralBouquetExtractor implements ResultSetExtractor<GeneralBouquet> {
 
     public List<GeneralBouquet> extract(ResultSet rs) {
 

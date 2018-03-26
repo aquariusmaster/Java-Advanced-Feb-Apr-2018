@@ -1,5 +1,6 @@
 package com.flowergarden.dao.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -15,6 +16,7 @@ public class JdbcHandler {
 
     private DataSource dataSource;
 
+    @Autowired
     public JdbcHandler(DataSource dataSource) {
         this.dataSource = dataSource;
     }
