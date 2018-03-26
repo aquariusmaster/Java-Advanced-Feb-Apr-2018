@@ -1,5 +1,6 @@
 package com.flowergarden.run;
 
+import com.flowergarden.FlowerGardenConfiguration;
 import com.flowergarden.dao.GeneralBouquetDao;
 import com.flowergarden.dao.GeneralFlowerDao;
 import com.flowergarden.dao.impl.GeneralBouquetJdbcDao;
@@ -17,7 +18,7 @@ public class Run {
     public static void main(String[] args) throws JAXBException {
 
         AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext("com.flowergarden");
+                new AnnotationConfigApplicationContext(FlowerGardenConfiguration.class);
 
         JdbcHandler jdbcHandler = context.getBean(JdbcHandler.class);
 
