@@ -3,16 +3,25 @@ package com.flowergarden.domain.flowers;
 import com.flowergarden.domain.bouquet.GeneralBouquet;
 import com.flowergarden.domain.properties.FreshnessInteger;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class GeneralFlower implements Flower<Integer>, Comparable<GeneralFlower> {
 
+	@XmlElement(name="id")
 	private Integer id;
-
+	@XmlElement(name="price")
 	private float price;
-
+	@XmlElement(name="length")
 	private int length;
-
+	@XmlElement(name = "freshness")
 	private FreshnessInteger freshness;
-
+	@XmlTransient
 	private GeneralBouquet bouquet;
 
 	public GeneralFlower() {

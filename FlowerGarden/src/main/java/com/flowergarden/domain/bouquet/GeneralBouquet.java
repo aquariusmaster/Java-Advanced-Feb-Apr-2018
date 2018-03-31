@@ -2,16 +2,26 @@ package com.flowergarden.domain.bouquet;
 
 import com.flowergarden.domain.flowers.GeneralFlower;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public abstract class GeneralBouquet implements Bouquet<GeneralFlower> {
 
+    @XmlElement(name="id")
     private Integer id;
+    @XmlElement(name="price")
     private Float assemblePrice;
+    @XmlElement(name="flowers")
     private List<GeneralFlower> flowerList = new ArrayList<>();
 
     public Integer getId() {
