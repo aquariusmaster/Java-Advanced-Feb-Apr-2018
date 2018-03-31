@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class GeneralBouquet implements Bouquet<GeneralFlower> {
+public class GeneralBouquet implements Bouquet<GeneralFlower> {
 
     @XmlElement(name="id")
     private Integer id;
@@ -102,6 +102,7 @@ public abstract class GeneralBouquet implements Bouquet<GeneralFlower> {
         return "GeneralBouquet{" +
                 "id=" + id +
                 ", assemblePrice=" + assemblePrice +
+                ", flowers=" + flowerList +
                 '}';
     }
 }

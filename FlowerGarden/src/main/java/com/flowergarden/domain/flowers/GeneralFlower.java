@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class GeneralFlower implements Flower<Integer>, Comparable<GeneralFlower> {
+public class GeneralFlower implements Flower<Integer>, Comparable<GeneralFlower> {
 
 	@XmlElement(name="id")
 	private Integer id;
