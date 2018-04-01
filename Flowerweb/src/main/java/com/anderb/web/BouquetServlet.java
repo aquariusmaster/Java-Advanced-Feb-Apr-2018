@@ -1,6 +1,7 @@
 package com.anderb.web;
 
 import com.flowergarden.domain.bouquet.GeneralBouquet;
+import com.flowergarden.domain.flowers.GeneralFlower;
 import com.flowergarden.service.GeneralBouquetService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,12 @@ public class BouquetServlet extends HttpServlet {
         GeneralBouquet bouquet = bouquetService.findOne(id);
 
         PrintWriter out = response.getWriter();
-        out.println("<h2>Bouquet " + id + ": " + bouquet + "</h2>");
+        out.println("<h2>Bouquet " + id + ": assembled price= " + bouquet.getAssemblePrice() + "</h2>");
+        out.println("<h2>Bouquet cost: " + bouquet.getPrice() + "</h2>");
+        out.println("<h2>Flowers: </h2>");
+        for (GeneralFlower flower : bouquet.getFlowers()) {
+            out.println("<h3> " + flower + "</h3>");
+        }
         out.close();
     }
 }
