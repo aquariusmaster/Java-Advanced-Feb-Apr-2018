@@ -1,5 +1,6 @@
 package com.flowergarden.dao.impl;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,8 @@ import java.util.MissingFormatArgumentException;
 @Component
 public class JdbcHandler {
 
+    private static Logger log = Logger.getLogger(JdbcHandler.class);
+
     private DataSource dataSource;
 
     @Autowired
@@ -24,6 +27,7 @@ public class JdbcHandler {
     public Connection getConnection() {
 
         try {
+            log.debug("Call getConnection");
             return dataSource.getConnection();
 
         } catch (SQLException e) {
@@ -36,8 +40,7 @@ public class JdbcHandler {
             try {
                 con.close();
             } catch (SQLException e) {
-                //close silently
-                e.printStackTrace();
+                log.error("Error while try release connection", e);
             }
         }
 
@@ -48,8 +51,7 @@ public class JdbcHandler {
             try {
                 stmt.close();
             } catch (SQLException e) {
-                //close silently
-                e.printStackTrace();
+                log.error("Error while try close statement", e);
             }
         }
 
@@ -60,8 +62,7 @@ public class JdbcHandler {
             try {
                 rs.close();
             } catch (SQLException e) {
-                //close silently
-                e.printStackTrace();
+                log.error("Error while try to close ResultSet", e);
             }
         }
 
@@ -74,8 +75,7 @@ public class JdbcHandler {
             closeStatement(rs.getStatement());
             releaseConnection(rs.getStatement().getConnection());
         } catch (SQLException e) {
-            //close silently
-            e.printStackTrace();
+            log.error("Error while try close connection", e);
         }
 
     }
